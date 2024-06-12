@@ -14,19 +14,25 @@ def synthesize_string():
 if __name__ == "__main__":
     # Δοκιμή με τα δεδομένα patterns
     patterns = ["AATTGA", "CGCTTAT", "GGACTCAT", "TTATTCGTA"]
-    string = synthesize_string() # erotima (i-a)
-    print(f"We start with string (Version 0): {string}")
 
+    string = synthesize_string() # erotima (i-a)
+
+    print(f"We start with the random string (Version 0): {string}")
     new_string =''
     version = 1
     for pattern in patterns: # erotima (i-b)
-        num_symbols = random.randint(1, 3) # πόσα σύμβολα θα αντικατστήσουμε
+        num_symbols = random.randint(1, 2) # πόσα σύμβολα θα αντικατστήσουμε(το πολύ 2)
+        print(f"    -Θα αντικατασταθουν {num_symbols} σύμβολα με το pattern = {pattern}")
         for i in range(1, num_symbols + 1):
             x = int(random.randint(1, len(pattern) - 1 ))
-            plus = pattern[:x-1] + random.choice(['A', 'C', 'G', 'T', '']) + pattern[x:] # αντικατάσταση με ένα άλλο τυχαία επιλεγμένο σύμβολο είτε με κενη συμβολοσειρα(διαγραφή)
-        new_string += plus
-        print(f"New string (Version {version}) (+ {plus}): {new_string}")
+            print(f"        -Αντικατασταση του συμβολου στην θεση {x}")
+            print("         -[pattern[:x-1] = " + pattern[:x-1] + "|| pattern[x:] = " + pattern[x:], end = ' ')
+            extend_string = pattern[:x-1] + random.choice(['A', 'C', 'G', 'T', '']) + pattern[x:] # αντικατάσταση με ένα άλλο τυχαία επιλεγμένο σύμβολο είτε με κενη συμβολοσειρα(διαγραφή)
+            print(" extend_string= " + extend_string + "]")
+        new_string += extend_string
+        print(f"New string (Version {version}) (+ {extend_string}): {new_string}")
         version += 1
+
     for i in range(1, len(patterns)): # erotima (i-c)
         new_string = new_string + random_symbols(random.randint(1, 2))
 
