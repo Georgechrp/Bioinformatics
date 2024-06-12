@@ -9,15 +9,13 @@ def synthesize_string():
     symbols = random_symbols(num_symbols) # Παίρνουμε τα τυχαία σύμβολα
     return symbols
 
-
-if __name__ == "__main__":
+def main_code_to_generate_a_string():
     # Δοκιμή με τα δεδομένα patterns
     patterns = ["AATTGA", "CGCTTAT", "GGACTCAT", "TTATTCGTA"]
 
     string = synthesize_string() # erotima (i-a)
 
     print(f"We start with the random string (Version 0): {string}")
-    new_string =''
     version = 1
     for pattern in patterns: # erotima (i-b)
         num_symbols = random.randint(1, 2) # πόσα σύμβολα θα αντικατστήσουμε(το πολύ 2)
@@ -28,10 +26,24 @@ if __name__ == "__main__":
             print("         -[pattern[:x-1] = " + pattern[:x-1] + "|| pattern[x:] = " + pattern[x:], end = ' ')
             extend_string = pattern[:x-1] + random.choice(['A', 'C', 'G', 'T', '']) + pattern[x:] # αντικατάσταση με ένα άλλο τυχαία επιλεγμένο σύμβολο είτε με κενη συμβολοσειρα(διαγραφή)
             print(" extend_string= " + extend_string + "]")
-        new_string += extend_string
-        print(f"New string (Version {version}) (+ {extend_string}): {new_string}")
+        string += extend_string
+        print(f"New string (Version {version}) (+ {extend_string}): {string}")
         version += 1
 
     for i in range(1, len(patterns)): # erotima (i-c)
-        new_string = new_string + random_symbols(random.randint(1, 2))
+        string = string + random_symbols(random.randint(1, 2))
+    return string
 
+
+strings = []
+
+for i in range(50):
+    strings.append(main_code_to_generate_a_string())
+
+random.shuffle(strings) #ανακατευουμε την λίστα με τα 50 strings
+
+datasetA = strings[:15]
+datasetB = strings[15:]
+
+print("DatasetA:", datasetA)
+print("DatasetB:", datasetB)
