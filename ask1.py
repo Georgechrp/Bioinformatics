@@ -1,6 +1,5 @@
 import random
 
-# erotima (i)
 def random_symbols(n):
     alphabet = ['A', 'C', 'G', 'T'] # Αλφάβητο
     return ''.join(random.choices(alphabet, k=n)) # Επιλέγουμε n τυχαία σύμβολα από το αλφάβητο
