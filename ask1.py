@@ -40,6 +40,9 @@ strings = []
 for i in range(50):
     strings.append(main_code_to_generate_a_string())
 
+with open("FullDataset.fasta", "w") as file:
+    file.write("\n".join(strings))
+
 random.shuffle(strings) #ανακατευουμε την λίστα με τα 50 strings
 
 datasetA = strings[:15]
@@ -47,3 +50,11 @@ datasetB = strings[15:]
 
 print("DatasetA:", datasetA)
 print("DatasetB:", datasetB)
+
+
+with open("datasetA.fasta", "w") as file:
+    file.write("\n".join(datasetA))
+
+
+with open("datasetB.fasta", "w") as file:
+    file.write("\n".join(datasetB))
