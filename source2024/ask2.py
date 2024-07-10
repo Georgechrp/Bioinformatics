@@ -1,90 +1,74 @@
 datasetA = ['AAAATCGATGCTTATGGACTGATTCATTCGTAAACTT', 'TCAAATTCACGCTTATGGTCTCATTTATTCTAGAGCG', 'TAATTGACGCGTATGGACTCATTTACTCGTAATTTT', 'GACTTGACGCTTTGGACTCGTTTATTCGAATGGCG', 'CAATGACGCTTATGACTCATTTCTTCGTAAAGC', 'ACAACTGACGTTATGGACTCATTATTCGTAGTG', 'AGACATTGACTCTTATGGACTCATTTAATCGTAGCATG', 'AACATTGAGGCTTATGGACTATTATTCGTAAAGGC', 'TAAATGGAGCTTATGGCCTCATTCATTCGTATTAA', 'CAGAAGTGAAGCTTATGGCCTCATTTATTCGTAGGCTA', 'CCCAATGAAGCTTATCGACTCATTTATTCGTAAAGAA', 'TAATTGACGCTATGAACTCATTTATGCGTATCTA', 'AAATTAGCTTATGGACACATTTCTTCGTATCTGG', 'AAAATGACGCTTTGGACTGATTTATTCGCAAGT', 'TAAAATTCACGCTTCTGGCTCATTTATTCTACTGTC']
 
 
-def global_alignment(seq1, seq2, alpha):
-    n = len(seq1)
-    m = len(seq2)
+import numpy as np
+
+def global_alignment(A, B, alpha=2):
+    len_A = len(A)
+    len_B = len(B)
     
-    # Αρχικοποίηση πίνακα βαθμολογίας
-    score = [[0 for _ in range(m+1)] for _ in range(n+1)]
-    #print(f"Score is {score}")
-    # Αρχικοποίηση πρώτης στήλης και πρώτης γραμμής
-    for i in range(1, n+1):
-        score[i][0] = score[i-1][0] - alpha
-    for j in range(1, m+1):
-        score[0][j] = score[0][j-1] - alpha
+    # Initialize the scoring and traceback matrices
+    scoring_matrix = np.zeros((len_A + 1, len_B + 1))
+    traceback_matrix = np.zeros((len_A + 1, len_B + 1), dtype='object')
     
-    # Υπολογισμός πίνακα βαθμολογίας
-    for i in range(1, n+1):
-        for j in range(1, m+1):
-            match = score[i-1][j-1] + (1 if seq1[i-1] == seq2[j-1] else -alpha/2)
-            delete = score[i-1][j] - alpha
-            insert = score[i][j-1] - alpha
-            score[i][j] = max(match, delete, insert)
+    # Initialize the first row and column
+    for i in range(1, len_A + 1):
+        scoring_matrix[i][0] = scoring_matrix[i-1][0] - alpha
+        traceback_matrix[i][0] = 'up'
     
-    # Ανακατασκευή στοίχισης
-    aligned_seq1 = ""
-    aligned_seq2 = ""
-    i, j = n, m
+    for j in range(1, len_B + 1):
+        scoring_matrix[0][j] = scoring_matrix[0][j-1] - alpha
+        traceback_matrix[0][j] = 'left'
+    
+    # Fill the scoring and traceback matrices
+    for i in range(1, len_A + 1):
+        for j in range(1, len_B + 1):
+            match = scoring_matrix[i-1][j-1] + (1 if A[i-1] == B[j-1] else -alpha / 2)
+            delete = scoring_matrix[i-1][j] - alpha
+            insert = scoring_matrix[i][j-1] - alpha
+            
+            max_score = max(match, delete, insert)
+            scoring_matrix[i][j] = max_score
+            
+            if max_score == match:
+                traceback_matrix[i][j] = 'diag'
+            elif max_score == delete:
+                traceback_matrix[i][j] = 'up'
+            else:
+                traceback_matrix[i][j] = 'left'
+    
+    # Traceback to get the alignment
+    align_A = []
+    align_B = []
+    i = len_A
+    j = len_B
     
     while i > 0 or j > 0:
-        current_score = score[i][j]
-        if i > 0 and j > 0 and current_score == score[i-1][j-1] + (1 if seq1[i-1] == seq2[j-1] else -alpha/2):
-            aligned_seq1 = seq1[i-1] + aligned_seq1
-            aligned_seq2 = seq2[j-1] + aligned_seq2
+        if traceback_matrix[i][j] == 'diag':
+            align_A.append(A[i-1])
+            align_B.append(B[j-1])
             i -= 1
             j -= 1
-        elif i > 0 and current_score == score[i-1][j] - alpha:
-            aligned_seq1 = seq1[i-1] + aligned_seq1
-            aligned_seq2 = "-" + aligned_seq2
+        elif traceback_matrix[i][j] == 'up':
+            align_A.append(A[i-1])
+            align_B.append('-')
             i -= 1
-        else:
-            aligned_seq1 = "-" + aligned_seq1
-            aligned_seq2 = seq2[j-1] + aligned_seq2
+        elif traceback_matrix[i][j] == 'left':
+            align_A.append('-')
+            align_B.append(B[j-1])
             j -= 1
     
-    return aligned_seq1, aligned_seq2, score[n][m]
-
-def multiple_alignment(datasets, alpha):
-    # Ξεκινάμε με την πρώτη συμβολοσειρά
-    aligned_sequences = [datasets[0]]
+    # Reverse the alignments as we built them backwards
+    align_A = align_A[::-1]
+    align_B = align_B[::-1]
     
-    # Συγκρίνουμε κάθε επόμενη συμβολοσειρά με το ευθυγραμμισμένο σύνολο
-    for i in range(1, len(datasets)):
-        current_sequence = datasets[i]
-        
-        # Ευθυγράμμιση κάθε συμβολοσειράς με τις ήδη ευθυγραμμισμένες
-        new_aligned_sequences = []
-        for aligned_seq in aligned_sequences:
-            aligned1, aligned2, _ = global_alignment(aligned_seq, current_sequence, alpha)
-            new_aligned_sequences.append(aligned1)
-        
-        # Προσθέτουμε την τρέχουσα ευθυγραμμισμένη συμβολοσειρά στο σύνολο
-        new_aligned_sequences.append(aligned2)
-        aligned_sequences = new_aligned_sequences
-    
-    return aligned_sequences
+    return ''.join(align_A), ''.join(align_B)
 
+# Example usage
+A = "AAAATCGATGCTTATGGACTGATTCATTCGTAAACTT"
+B = "TCAAATTCACGCTTATGGTCTCATTTATTCTAGAGCG"
+align_A, align_B = global_alignment(A, B, alpha=2)
 
-'''# Παράδειγμα χρήσης της συνάρτησης
-seq1 = "AATTGA"
-seq2 = "CGCTTAT"
-alpha = 2  # 20206, 21127
+print("Alignment A:", align_A)
+print("Alignment B:", align_B)
 
-aligned_seq1, aligned_seq2, score = global_alignment(seq1, seq2, alpha)
-print(f"Aligned Sequences:\n{aligned_seq1}\n{aligned_seq2}")
-print(f"Alignment Score: {score}")
-'''
-
-
-'''
-# Παράδειγμα χρήσης της συνάρτησης με datasetA
-datasetA = ["AATTGA", "CGCTTAT", "GGACTCAT", "TTATTCGTA", "TTCGGA", "GGATC", "ATTGA", "CGCGTA", "GACTT", "TATTG", "TGACG", "CCTGA", "GGCGTA", "TTGGA", "GGATT"]
-alpha = 1  # Υποθέτουμε ότι τα ΑΜ καταλήγουν σε περιττό ψηφίο
-
-aligned_sequences = multiple_alignment(datasetA, alpha)
-
-# Εκτύπωση του αποτελέσματος της πολλαπλής στοίχισης
-for seq in aligned_sequences:
-    print(seq)
-'''
