@@ -35,6 +35,8 @@ def main_code_to_generate_a_string():
     return string
 
 
+
+
 strings = []
 
 for i in range(50):
@@ -42,6 +44,7 @@ for i in range(50):
 
 with open("FullDataset.fasta", "w") as file:
     file.write("\n".join(strings))
+    print(" - - Δημιουργήθηκε το αρχείο FullDataset - - ")
 
 random.shuffle(strings) #ανακατευουμε την λίστα με τα 50 strings
 
@@ -54,7 +57,9 @@ print("DatasetB:", datasetB)
 
 with open("datasetA.fasta", "w") as file:
     file.write("\n".join(datasetA))
+    print(" - - Δημιουργήθηκε το αρχείο datasetA - - ")
 
 
 with open("datasetB.fasta", "w") as file:
     file.write("\n".join(datasetB))
+    print(" - - Δημιουργήθηκε το αρχείο datasetB - - ")
