@@ -37,31 +37,9 @@ def main_code_to_generate_a_string():
         string = string + random_symbols(random.randint(1, 2))
     return string
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 strings = []
 
-for i in range(1):
+for i in range(50):
     strings.append(main_code_to_generate_a_string())
 
 with open("FullDataset.fasta", "w") as file:
