@@ -25,9 +25,10 @@ def main_code_to_generate_a_string():
             print(f"        -Αντικατασταση του συμβολου στην θεση {x}")
             print("         -[pattern[:x-1] = " + pattern[:x-1] + "|| pattern[x:] = " + pattern[x:], end = ' ')
             choices = ['A', 'C', 'G', 'T', '']
-            choices.remove(pattern[x])
+            choices.remove(pattern[x])  #ετσι ειμαστε σιγουροι οτι δεν θα αντικαταστησει ενα γραμμα με τον εαυτο του 
             extend_string = pattern[:x-1] + random.choice(choices) + pattern[x:] # αντικατάσταση με ένα άλλο τυχαία επιλεγμένο σύμβολο είτε με κενη συμβολοσειρα(διαγραφή)
             print(" extend_string= " + extend_string + "]")
+            pattern = extend_string
         string += extend_string
         print(f"New string (Version {version}) (+ {extend_string}): {string}")
         version += 1
