@@ -30,32 +30,36 @@ def global_alignment(A, B, alpha=2):    #20206, 21127 --> a=2
      # Ανάκτηση της βέλτιστης στοίχισης
     align1, align2 = [], []
     i, j = len(A), len(B)
-    #align1.append(A[i-1])
-    #align2.append(B[j-1])
 
     while i > 0 and j > 0:
         score_current = table[i][j]
         score_diagonal = table[i-1][j-1]
-        score_up = table[i][j-1]
-        score_left = table[i-1][j]
+        score_left = table[i][j-1]
+        score_up = table[i-1][j]
 
         max_score = max(score_diagonal, score_up, score_left)
         if max_score == score_diagonal:
-            i -= 1
-            j -= 1
+            print(" - -1- -")
+            print(score_diagonal)
             align1.append(A[i-1])
             align2.append(B[j-1])
-        elif max_score == score_up:
+            print(align1, align2)
+            i -= 1
             j -= 1
+        elif max_score == score_left:
+            print(" - -LEFT- -")
+            print(score_left)
             align1.append("-")
             align2.append(B[j-1])
-        elif max_score == score_left:
-            i -= 1
+            print(align1, align2)
+            j -= 1
+        elif max_score == score_up:
+            print(" - -UP- -")
+            print(score_up)
             align1.append(A[i-1])
             align2.append("-")
-
-        
-   
+            print(align1, align2)
+            i -= 1
 
     align1.reverse()
     align2.reverse()
@@ -71,6 +75,10 @@ seq1 = "GCT"
 seq2 = "AGTAC"
 alpha = 2
 
+seq1 = "GATTACA"
+seq2 = "GTCGACGCA"
+
+
 alignment1, alignment2 = global_alignment(seq1, seq2, alpha)
-print("Alignment 1:", alignment1)
-print("Alignment 2:", alignment2)
+print("Alignment 1:", alignment2)
+print("Alignment 2:", alignment1)
