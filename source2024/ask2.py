@@ -30,8 +30,8 @@ def global_alignment(A, B, alpha=2):    #20206, 21127 --> a=2
      # Ανάκτηση της βέλτιστης στοίχισης
     align1, align2 = [], []
     i, j = len(A), len(B)
-    align1.append(A[i-1])
-    align2.append(B[j-1])
+    #align1.append(A[i-1])
+    #align2.append(B[j-1])
 
     while i > 0 and j > 0:
         score_current = table[i][j]
@@ -39,29 +39,23 @@ def global_alignment(A, B, alpha=2):    #20206, 21127 --> a=2
         score_up = table[i][j-1]
         score_left = table[i-1][j]
 
-        min_score = max(score_diagonal, score_up, score_left)
-        if min_score == score_diagonal:
+        max_score = max(score_diagonal, score_up, score_left)
+        if max_score == score_diagonal:
             i -= 1
             j -= 1
             align1.append(A[i-1])
             align2.append(B[j-1])
-        elif min_score == score_up:
+        elif max_score == score_up:
             j -= 1
-            align1.append(A[i-1])
-            align2.append(B[j-1])
-        elif min_score == score_left:
-            i -= 1
-            align1.append(A[i-1])
-            align2.append(B[j-1])
-        else:
             align1.append("-")
+            align2.append(B[j-1])
+        elif max_score == score_left:
+            i -= 1
+            align1.append(A[i-1])
             align2.append("-")
-        
 
         
-
-
-        
+   
 
     align1.reverse()
     align2.reverse()
