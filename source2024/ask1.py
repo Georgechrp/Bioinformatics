@@ -1,4 +1,8 @@
 import random
+import sys
+
+# Ensure the console uses utf-8 encoding
+sys.stdout.reconfigure(encoding='utf-8')
 
 def random_symbols(n):
     alphabet = ['A', 'C', 'G', 'T'] # Αλφάβητο
@@ -55,11 +59,11 @@ print("DatasetA:", datasetA)
 print("DatasetB:", datasetB)
 
 
-with open("datasetA.fasta", "w") as file:
+with open("datasetA.fasta", "w", encoding="utf-8") as file:
     file.write("\n".join(datasetA))
     print(" - - Δημιουργήθηκε το αρχείο datasetA - - ")
 
 
-with open("datasetB.fasta", "w") as file:
+with open("datasetB.fasta", "w", encoding="utf-8") as file:
     file.write("\n".join(datasetB))
     print(" - - Δημιουργήθηκε το αρχείο datasetB - - ")
