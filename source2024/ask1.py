@@ -46,7 +46,7 @@ strings = []
 for i in range(50):
     strings.append(main_code_to_generate_a_string())
 
-with open("FullDataset.fasta", "w") as file:
+with open("auxiliary2024/FullDataset.txt", "w") as file:
     file.write("\n".join(strings))
     print(" - - Δημιουργήθηκε το αρχείο FullDataset - - ")
 
@@ -59,11 +59,11 @@ print("DatasetA:", datasetA)
 print("DatasetB:", datasetB)
 
 
-with open("datasetA.fasta", "w", encoding="utf-8") as file:
+with open("auxiliary2024/datasetA.txt", "w", encoding="utf-8") as file:
     file.write("\n".join(datasetA))
     print(" - - Δημιουργήθηκε το αρχείο datasetA - - ")
 
 
-with open("datasetB.fasta", "w", encoding="utf-8") as file:
+with open("auxiliary2024/datasetB.txt", "w", encoding="utf-8") as file:
     file.write("\n".join(datasetB))
     print(" - - Δημιουργήθηκε το αρχείο datasetB - - ")
