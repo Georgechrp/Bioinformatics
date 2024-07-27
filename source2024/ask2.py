@@ -26,7 +26,7 @@ except Exception as e:
 
 
 
-A=['AATTGAT', 'CTCATTGA', 'GTTGAGAT', 'GATGACTCAT']
+A=['AATTGAT', 'CTCATTGA', 'GTTGAGAT', 'GATGACTCAT', 'AAGAGAGTTT', 'AAGAGAGTTT']
 
 
 def global_alignment(A, B, alpha=2):
@@ -121,6 +121,11 @@ def neighbor_joining(dist_matrix):
         clusters.append(new_cluster)
         clusters.pop(max(a, b))
         clusters.pop(min(a, b))
+    if len(clusters[0]) % 2 == 1:
+        temp = clusters[0][0]
+        clusters[0].pop(0)
+        clusters[0].append(temp)
+
     return clusters[0]
 dist_matrix = pairwise_distance_matrix(A)
 guide_tree = neighbor_joining(dist_matrix)
