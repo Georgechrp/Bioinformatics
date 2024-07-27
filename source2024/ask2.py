@@ -25,6 +25,10 @@ except Exception as e:
     print(f"An error occurred: {e}")
 
 
+
+A=['AATTGAT', 'CTCATTGA', 'GTTGAGAT', 'GATGACTCAT']
+
+
 def global_alignment(A, B, alpha=2):
     m, n = len(A), len(B)
     table = np.zeros((m + 1, n + 1))
@@ -96,7 +100,7 @@ def pairwise_distance_matrix(sequences, alpha=2):
             dist_matrix[i][j] = dist_matrix[j][i] = score 
     return dist_matrix
 
-#print(pairwise_distance_matrix(A))
+print(pairwise_distance_matrix(A))
 
 
 
@@ -108,18 +112,19 @@ def neighbor_joining(dist_matrix):
         a, b = -1, -1
         for i in range(len(clusters)):
             for j in range(i + 1, len(clusters)):
-                dist = sum(dist_matrix[p][q] for p in clusters[i] for q in clusters[j]) / (len(clusters[i]) * len(clusters[j]))
+                dist = -sum(dist_matrix[p][q] for p in clusters[i] for q in clusters[j]) / (len(clusters[i]) * len(clusters[j]))
                 if dist < min_dist:
                     min_dist = dist
                     a, b = i, j
+        print(clusters)
         new_cluster = clusters[a] + clusters[b]
         clusters.append(new_cluster)
         clusters.pop(max(a, b))
         clusters.pop(min(a, b))
     return clusters[0]
-#dist_matrix = pairwise_distance_matrix(A)
-#guide_tree = neighbor_joining(dist_matrix)
-#print(guide_tree)
+dist_matrix = pairwise_distance_matrix(A)
+guide_tree = neighbor_joining(dist_matrix)
+print(guide_tree)
 
 
 def progressive_alignment(sequences, alpha=2):
@@ -138,7 +143,16 @@ def progressive_alignment(sequences, alpha=2):
         #sequences.pop(b)
     return sequences
 
-#print(pairwise_distance_matrix(A))
+print(pairwise_distance_matrix(A))
+
+result = progressive_alignment(A, alpha=2)
+print("Multiple Sequence Alignment Result:")
+for aligned_seq in result:
+    print(aligned_seq)
+
+
+
+
 
 result = progressive_alignment(datasetA, alpha=2)
 print("Multiple Sequence Alignment Result:")
