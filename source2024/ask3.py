@@ -101,7 +101,7 @@ def viterbi(obs, emission_probs, transition_probs):
 
 # Υπολογίζουμε τα σκορ ευθυγράμμισης και τις διαδρομές για τις ακολουθίες στο datasetB
 results = []
-for sequence in datasetB:
+for sequence in msa_result:
     prob, path = viterbi(sequence, emission_probs, transition_probs)
     results.append((sequence, prob, path))
 

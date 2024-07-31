@@ -26,7 +26,7 @@ except Exception as e:
 
 
 
-A=['AATTGAT', 'CTCATTGA', 'GTTGAGAT', 'GATGACTCAT', 'AAGAGAGTTT', 'AAGAGAGTTT']
+A=['AATTGAT', 'CTCATTGA', 'GTTGAGAT', 'GATGACTCAT', 'AAGAGAGTTT']
 
 
 def global_alignment(A, B, alpha=2):
@@ -62,26 +62,26 @@ def global_alignment(A, B, alpha=2):
 
         max_score = max(score_diagonal, score_up, score_left)
         if max_score == score_diagonal:
-            print(" - -Diagonal- -")
-            print(score_diagonal)
+            #print(" - -Diagonal- -")
+            #print(score_diagonal)
             align1.append(A[i-1])
             align2.append(B[j-1])
-            print(align1, align2)
+            #print(align1, align2)
             i -= 1
             j -= 1
         elif max_score == score_left:
-            print(" - -LEFT- -")
-            print(score_left)
+            #print(" - -LEFT- -")
+            #print(score_left)
             align1.append("-")
             align2.append(B[j-1])
-            print(align1, align2)
+            #print(align1, align2)
             j -= 1
         elif max_score == score_up:
-            print(" - -UP- -")
-            print(score_up)
+            #print(" - -UP- -")
+            #print(score_up)
             align1.append(A[i-1])
             align2.append("-")
-            print(align1, align2)
+            #print(align1, align2)
             i -= 1
 
     align1.reverse()
@@ -102,6 +102,16 @@ def pairwise_distance_matrix(sequences, alpha=2):
 
 print(pairwise_distance_matrix(A))
 
+
+def short_sequences(sequences):
+    n = len(sequences)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if len(sequences[j]) < len(sequences[j+1]):
+                sequences[j], sequences[j+1] = sequences[j+1], sequences[j]
+    return sequences
+
+print(short_sequences(A))
 
 
 def neighbor_joining(dist_matrix):
@@ -132,34 +142,36 @@ guide_tree = neighbor_joining(dist_matrix)
 print(guide_tree)
 
 
-def progressive_alignment(sequences, alpha=2):
-    dist_matrix = pairwise_distance_matrix(sequences, alpha)
+def progressive_alignment(sequences):
+    dist_matrix = pairwise_distance_matrix(sequences)
     guide_tree = neighbor_joining(dist_matrix)
 
-    while len(guide_tree) > 1:
-        a, b = guide_tree[:2]
-        align1, align2, _ = global_alignment(sequences[a], sequences[b], alpha)
-        sequences[a] = align1
-        sequences[b] = align2
-        guide_tree = guide_tree[2:]
-        for i in range(len(guide_tree)):
-            if guide_tree[i] > b:
-                guide_tree[i] -= 1
-        #sequences.pop(b)
-    return sequences
+    aligned_sequences = [sequences[guide_tree[0]], sequences[guide_tree[1]]]
+    align1, align2, _ = global_alignment(aligned_sequences[0], aligned_sequences[1])
+    aligned_sequences = [align1, align2]
 
-print(pairwise_distance_matrix(A))
+    for idx in guide_tree[2:]:
+        new_alignments = []
+        for aligned_seq in aligned_sequences:
+            align1, align2, _ = global_alignment(sequences[idx], aligned_seq)
+            new_alignments.append(align2)
+        new_alignments.insert(0, align1)
+        aligned_sequences = new_alignments
 
-result = progressive_alignment(A, alpha=2)
-print("Multiple Sequence Alignment Result:")
-for aligned_seq in result:
-    print(aligned_seq)
-
+    # Align all aligned sequences to the same length
+    max_length = max(len(seq) for seq in aligned_sequences)
+    aligned_sequences = [seq.ljust(max_length, '-') for seq in aligned_sequences]
+    
+    return aligned_sequences
 
 
 
 
-result = progressive_alignment(datasetA, alpha=2)
+datasetA = ['AATTGAT', 'CGGAGAGTTT', 'CAGTTT', 'AAGAGAGTTT']
+
+
+
+result = progressive_alignment(datasetA)
 print("Multiple Sequence Alignment Result:")
 for aligned_seq in result:
     print(aligned_seq)
