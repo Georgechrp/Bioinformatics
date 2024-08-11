@@ -39,11 +39,10 @@ def create_hmm_profile():
             i_for_conserved_region= i_for_conserved_region + 1
             print("-->", end = " ")
             print(f"P", {i_for_conserved_region}, end = " ")
-    
-create_hmm_profile()
-
+    print()
 
 def create_Emmision_Prob_table():
+    emmision_table = {symbol: [0 for _ in range(num_cols)] for symbol in alphabeta}
     for i in range(num_cols):
         col = take_the_column(i)
         col_no_gaps = col.replace("-", "")
@@ -58,10 +57,11 @@ def create_Emmision_Prob_table():
             emmision_table[symbol][i] = prob
 
         print(f"Στήλη {i+1}: {symbol_counts}")
+    print("\nΠίνακας Πιθανοτήτων Εκπομπής (Emmision Probability Table):")
+    for symbol in alphabeta:
+        print(f"{symbol}: {emmision_table[symbol]}")
 
-emmision_table = {symbol: [0 for _ in range(num_cols)] for symbol in alphabeta}
+
+create_hmm_profile()
 create_Emmision_Prob_table()
 
-print("\nΠίνακας Πιθανοτήτων Εκπομπής (Emmision Probability Table):")
-for symbol in alphabeta:
-    print(f"{symbol}: {emmision_table[symbol]}")
