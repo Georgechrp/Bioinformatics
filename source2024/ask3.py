@@ -2,19 +2,13 @@
 from collections import Counter
 
 multiple_alignment = [
-    "GCCA--TAG",
-    "А-САСТТАС",
-    "GCAC--TAC",
-    "GCCAGGTAC",
-    "G-CA--T-C"
-]
-multiple_alignment = [
     "ACA---ATG",
     "TCAACTATC",
     "ACAC--AGC",
     "ACA---ATC",
     "A-C---ATC"
 ]
+
 threshold = 70
 num_rows = len(multiple_alignment)
 num_cols = len(multiple_alignment[0]) 
@@ -22,15 +16,12 @@ alphabeta = ['A', 'C', 'T', 'G', '-']
 
 
 def is_conserved_region(align):
-    align2 = align.replace("-", "")
-    symbol_count = {}
-    for symbol in align2:
-        if symbol in symbol_count:
-            symbol_count[symbol] += 1
-        else:
-            symbol_count[symbol] = 1
-    for i in symbol_count:
-        if(symbol_count[i]/len(align2))*100 >= threshold: 
+    # Αφαιρούμε τα παύλες για να μετρήσουμε μόνο τα σύμβολα
+    clean_align = align.replace("-", "")
+    symbol_count = Counter(clean_align)
+    
+    for symbol, count in symbol_count.items():
+        if (count / len(align)) * 100 >= threshold: 
             return True
     return False
 
@@ -93,12 +84,15 @@ def find_match_states(a, b):
 def create_Transition_Prob_table():
     print(" - - - Transition - - -")
     for i in range(num_cols - 1):
-        print(f"Υπάρχει {find_deletions( take_the_column(i), take_the_column(i+1))} διαγραφή από την στήλη {i+1} στην στήλη {i+2}")
+        #print(f"Υπάρχει {find_deletions( take_the_column(i), take_the_column(i+1))} διαγραφή από την στήλη {i+1} στην στήλη {i+2}")
         #print("---------------------")
-        #print(f"Υπάρχει {find_insertions( take_the_column(i), take_the_column(i+1))} προσθήκη από την στήλη {i+1} στην στήλη {i+2}")
+        print(f"Υπάρχει {find_insertions( take_the_column(i), take_the_column(i+1))} προσθήκη από την στήλη {i+1} στην στήλη {i+2}")
     
     #print(find_match_states(take_the_column(0), take_the_column(1)))
 
+
+for i in range(num_cols):
+    print(i, take_the_column(i), is_conserved_region(take_the_column(i)))
 
 
 
