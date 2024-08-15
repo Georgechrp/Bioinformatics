@@ -14,9 +14,8 @@ num_rows = len(multiple_alignment)
 num_cols = len(multiple_alignment[0]) 
 alphabeta = ['A', 'C', 'T', 'G', '-']
 
-
 def is_conserved_region(align):
-    # Αφαιρούμε τα παύλες για να μετρήσουμε μόνο τα σύμβολα
+    # Αφαιρούμε τα παύλες για να μετρήσουμε μόνο τα σύμβολα A, C, T, G
     clean_align = align.replace("-", "")
     symbol_count = Counter(clean_align)
     
@@ -82,26 +81,49 @@ def find_match_states(a, b):
     return 1 - (find_insertions(a, b) + find_deletions(a, b))
 
 def create_Transition_Prob_table():
-    print(" - - - Transition - - -")
+    match_states = []
+    insertion_states = []
+    deletion_states = []
+    state_count = 1
+
     for i in range(num_cols - 1):
-        #print(f"Υπάρχει {find_deletions( take_the_column(i), take_the_column(i+1))} διαγραφή από την στήλη {i+1} στην στήλη {i+2}")
-        #print("---------------------")
-        print(f"Υπάρχει {find_insertions( take_the_column(i), take_the_column(i+1))} προσθήκη από την στήλη {i+1} στην στήλη {i+2}")
+        current_state = f"P{state_count}"
+        next_state_match = f"P{state_count + 1}"
+        next_state_insert = f"I{state_count + 1}"
+        next_state_delete = f"D{state_count + 1}"
+
+        deletions = find_deletions(take_the_column(i), take_the_column(i + 1))
+        insertions = find_insertions(take_the_column(i), take_the_column(i + 1))
+        match = find_match_states(take_the_column(i), take_the_column(i + 1))
+        
+        if is_conserved_region(take_the_column(i)):
+            if is_conserved_region(take_the_column(i + 1)):
+                match_states.append((current_state, next_state_match, match))
+                state_count += 1
+            else:
+                if insertions > 0:
+                    insertion_states.append((current_state, next_state_insert, insertions))
+        else:
+            if deletions > 0 or take_the_column(i).count('-') > 0:
+                deletion_states.append((current_state, next_state_delete, deletions))
     
-    #print(find_match_states(take_the_column(0), take_the_column(1)))
+    print("\nΠίνακας Μεταβάσεων (Transition Probability Table):")
+    if match_states:
+        print("Match States:   ", [f"{s[0]} -> {s[1]}: {s[2]:.4f}" for s in match_states])
+    if insertion_states:
+        print("Insertions:     ", [f"{s[0]} -> {s[1]}: {s[2]:.4f}" for s in insertion_states])
+    if deletion_states:
+        print("Deletions:      ", [f"{s[0]} -> {s[1]}: {s[2]:.4f}" for s in deletion_states])
 
 
-for i in range(num_cols):
-    print(i, take_the_column(i), is_conserved_region(take_the_column(i)))
-
-
-
+#for i in range(num_cols):
+    #print(i, take_the_column(i), is_conserved_region(take_the_column(i)))
 
 create_match_states()
-create_Emmision_Prob_table()
+#create_Emmision_Prob_table()
 
 '''Transition_Table = [[0 for _ in range(10)] for _ in range(10)]
 for row in Transition_Table:
     print(row)'''
 
-create_Transition_Prob_table()
+#create_Transition_Prob_table()
