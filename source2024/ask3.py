@@ -8,7 +8,7 @@ multiple_alignment = [
     "ACA---ATC",
     "A-C---ATC"
 ]
-
+deletions = 0
 threshold = 70
 num_rows = len(multiple_alignment)
 num_cols = len(multiple_alignment[0]) 
@@ -31,13 +31,14 @@ def take_the_column(n):
     return col
 
 def create_match_states():
-    print("start", end = " ")
+    print("start -1->", end = " ")
     i_for_conserved_region = 0
     for i in range(num_cols):
         if is_conserved_region(take_the_column(i)):
             i_for_conserved_region= i_for_conserved_region + 1
-            print(f"-{find_match_states(take_the_column(i-1), take_the_column(i))}->", end = " ")
             print(f"[P{i_for_conserved_region}]", end = " ")
+            if i<num_cols-1:
+                print(f"-({find_match_states(take_the_column(i), take_the_column(i+1))})->", end = " ")
     print("-1-> end", end = " ")
 
 def create_Emmision_Prob_table():
@@ -62,7 +63,11 @@ def create_Emmision_Prob_table():
 
 
 def find_deletions(a, b):
-    deletions = 0
+    global deletions  
+    if(is_conserved_region(a)):
+        deletions = deletions
+    else:
+        deletions = 0
     if(is_conserved_region(a) and is_conserved_region(b)):
         for i in range(len(a)):
             if a[i]!='-' and b[i]=="-":
@@ -117,8 +122,13 @@ def create_Transition_Prob_table():
 
 
 #for i in range(num_cols):
-    #print(i, take_the_column(i), is_conserved_region(take_the_column(i)))
+    #print(i, take_the_column(i), find_insertions(take_the_column(i-1), take_the_column(i)),  find_deletions(take_the_column(i-1), take_the_column(i)), find_match_states(take_the_column(i-1), take_the_column(i)))
 
+#print(take_the_column(-1))
+
+#print(find_match_states(take_the_column(2), take_the_column(3)))
+#print(find_insertions(take_the_column(2), take_the_column(3)))
+#print(find_deletions(take_the_column(2), take_the_column(3)))
 create_match_states()
 #create_Emmision_Prob_table()
 
