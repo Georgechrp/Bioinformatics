@@ -26,7 +26,7 @@ except Exception as e:
 
 
 
-A=['AATTGAT', 'CTCATTGA', 'GTTGAGAT', 'GATGACTCAT', 'AAGAGAGTTT']
+A=['AATTGAT', 'ATTTGAT', 'ATTAGAT', 'CCTTGAT']
 
 
 def global_alignment(A, B, alpha=2):
@@ -168,7 +168,7 @@ def progressive_alignment(sequences):
 
 
 datasetA = ['AATTGAT', 'CGGAGAGTTT', 'CAGTTT', 'AAGAGAGTTT']
-
+datasetA=['AAGGGAT', 'ATTTGAT', 'ATTCCAGAT', 'CCTTGAT']
 
 
 result = progressive_alignment(datasetA)
